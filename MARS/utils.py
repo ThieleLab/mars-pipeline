@@ -55,43 +55,46 @@ def merge_files(input1, input2, input_is_df=False):
     Merge two files using pandas and return the merged DataFrame.
 
     Args:
-        input1 (str):         The file path of the first input file.
-        input2 (str):         The file path of the second input file.
-        input_is_df (boolean):    Boolean whether input file is a path to a file or (in case o the streamlit
-                                  app.py) a pandas dataframe.
+        input1 (str or pd.DataFrame): The first input, either a file path or a DataFrame.
+        input2 (str or pd.DataFrame): The second input, either a file path or a DataFrame, or None.
+        input_is_df (bool): Whether the inputs are DataFrames instead of file paths.
 
     Returns:
         pd.DataFrame: The merged DataFrame.
     """
 
     # Read input files into pandas DataFrames  
-    
-    if input2 == None:
-        if input_is_df == False:
+    if input2 is None:
+        if not input_is_df:
             df1 = read_file_as_dataframe(input1, header=0, index_col=0)
         else:
             df1 = input1
 
         merged_df = df1
-        merged_df = merged_df.set_index('Taxon')
-        
+
+        if merged_df.index.name != 'Taxon':
+            if 'Taxon' in merged_df.columns:
+                merged_df = merged_df.set_index('Taxon')
     else:
-        if input_is_df == False:
+        if not input_is_df:
             df1 = read_file_as_dataframe(input1, header=0, index_col=0)
             df2 = read_file_as_dataframe(input2, header=1, index_col=0)
         else:
             df1 = input1
             df2 = input2
+
         # Merge DataFrames using their index values
         merged_df = pd.merge(df1, df2, left_index=True, right_index=True, how='inner')
-        # Drop the 'Confidence' column
+
         try:
             merged_df = merged_df.drop(columns=['Confidence'])
-        except:
+        except KeyError:
             pass
 
-        # Reset the index and set the 'Taxon' column as the new index
-        merged_df = merged_df.reset_index(drop=True).set_index('Taxon')
+        merged_df = merged_df.reset_index(drop=True)
+
+        if 'Taxon' in merged_df.columns:
+            merged_df = merged_df.set_index('Taxon')
 
     return merged_df
 
