@@ -71,7 +71,7 @@ def process_microbial_abundances(input_file1, input_file2, output_path=None, cut
     logger.info('Calculating metrices for pre-mapping dataframes.')
     pre_mapping_metrics, pre_mapping_abundance_metrics, pre_mapping_beta_diversity, pre_mapping_summ_stats = calculate_metrics(preMapped_dataframes_normalized, preMapped_dataframes)
     logger.info('Calculating metrices for post-mapping present dataframes.')
-    present_post_mapping_metrics, present_post_mapping_abundance_metrics, present_post_mapping_beta_diversity, present_post_mapping_summ_stats = calculate_metrics(present_dataframes_normalized, present_dataframes)
+    present_post_mapping_metrics, present_post_mapping_abundance_metrics, present_post_mapping_beta_diversity, present_post_mapping_summ_stats = calculate_metrics(present_dataframes_adjForModelling, present_dataframes)
     logger.info('Calculating metrices for post-mapping absent dataframes.')
     absent_post_mapping_metrics, absent_post_mapping_abundance_metrics, absent_post_mapping_beta_diversity, absent_post_mapping_summ_stats = calculate_metrics(absent_dataframes_normalized, absent_dataframes)
     
